@@ -21,3 +21,10 @@
   when: "item.state == 'file'"
   notify: Restart vector
   tags: [vector_configure]
+
+- name: VECTOR | Removes default config file vector.yaml
+  file:
+    path: /etc/vector/vector.yaml
+    state: absent
+  notify: Restart vector
+  tags: [vector_configure]
