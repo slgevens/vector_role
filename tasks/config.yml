@@ -10,6 +10,17 @@
   with_filetree: "{{ vector_config_template_path }}"
   when: "item.state == 'directory'"
 
+- name: VECTOR | Configure vector environment variables
+  template:
+    src: default.j2
+    dest: "{{ vector_env_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: vector_envs is defined
+  notify: Restart vector
+  tags: [vector_configure]
+
 - name: VECTOR | Configure vector
   template:
     src: "{{ item.root }}/{{ item.path }}"

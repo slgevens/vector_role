@@ -44,6 +44,11 @@ vector_log_output: journal
 
 vector_config_template_path: "templates/config/"
 vector_service_template_path: "vector.service.j2"
+# vector_envs: # set in {{ vector_env_path }}
+#   - name: OPENSEARCH_HOSTNAME
+#     value: "${OPENSEARCH_HOSTNAME}"
+#   - name: OPENSEARCH_INDEX
+#     value: "${OPENSEARCH_INDEX}"
 
 # vector_config_files:  # https://vector.dev/docs/reference/configuration/#multiple-files
 #   - "{{ vector_config_path }}/*.toml"
