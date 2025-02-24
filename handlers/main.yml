@@ -1,13 +1,24 @@
 ---
-
 - name: Restart vector
   systemd:
     name: vector
     state: restarted
-  when: vector_service_state != 'stopped'
+  when:
+    - vector_service_state != 'stopped'
+    - not pkg_mgr.stdout == "yum"
 
 - name: Reload vector
   systemd:
     name: vector
     state: reloaded
-  when: vector_service_state != 'stopped'
+  when:
+    - vector_service_state != 'stopped'
+    - not pkg_mgr.stdout == "yum"
+
+- name: Restart vector init
+  service:
+    name: vector
+    state: restarted
+  when:
+    - vector_service_state != 'stopped'
+    - pkg_mgr.stdout == "yum"

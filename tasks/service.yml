@@ -1,6 +1,5 @@
 ---
-
-- name: VECTOR | Copy Daemon script
+- name: VECTOR | Copy Daemon script (systemd)
   template:
     src: "{{ vector_service_template_path }}"
     dest: /etc/systemd/system/vector.service
@@ -8,6 +7,19 @@
     owner: root
     group: root
   notify: Restart vector
+  when:
+    - not pkg_mgr.stdout == "yum"
+
+- name: VECTOR | Copy Daemon script (init.d)
+  template:
+    src: "{{ vector_initd_template_path }}"
+    dest: /etc/init.d/vector
+    mode: 0755
+    owner: root
+    group: root
+  notify: Restart vector init
+  when:
+    - pkg_mgr.stdout == "yum"
 
 - name: VECTOR | Configuring service
   systemd:
@@ -15,3 +27,5 @@
     state: "{{ vector_service_state }}"
     enabled: "{{ vector_service_enabled }}"
     daemon_reload: yes
+  when:
+    - not pkg_mgr.stdout == "yum"

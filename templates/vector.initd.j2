@@ -1,0 +1,49 @@
+{{ ansible_managed | comment }}
+{% if vector_config_files is defined %}
+    {% set params_exec_start = '--config "' + vector_config_files | join('" --config "') + '"' %}
+    {% set params_exec_start_pre = '"' + vector_config_files | join('" "') + '"' %}
+{% elif vector_configs_folder is defined %}
+    {% set params_exec_start = '--config-dir "' + vector_configs_folder + '"' %}
+    {% set params_exec_start_pre = params_exec_start %}
+{% endif %}
+
+#!/bin/bash
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+# chkconfig: 2345 20 80
+# description: Description comes here....
+   
+# Source function library.
+. /etc/init.d/functions
+   
+start() {
+    echo -n "Starting vector"
+    {{ vector_bin_path }} {{ params_exec_start | default('') }} &
+}
+   
+stop() {
+    echo -n "Stopping"
+    kill -9 `ps ax | grep "vector" | grep -v grep | awk '{ print $1 }'`
+}
+   
+case "$1" in 
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+        echo "Status: "
+        ps aux | grep "vector" | grep -v grep
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+   
+exit 0 
